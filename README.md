@@ -51,6 +51,29 @@ The function uses a systematic approach to select the most appropriate average:
    - **Use MEDIAN if**: Outliers present OR |skewness| ≥ 0.5
    - **Use MODE if**: A single value appears in >50% of the dataset
 
+### 🗂️ Process Flow
+
+```mermaid
+flowchart TD
+    A["Start: Input prices (list or Series)"]
+    B["Convert to pandas Series, drop NaNs"]
+    C["Calculate statistics:\n- Mean\n- Median\n- Mode\n- Std\n- Skewness"]
+    D["Detect outliers using IQR"]
+    E{"Outliers present or |skew| >= 0.5?"}
+    F["Use Median as robust average"]
+    G["No outliers and |skew| < 0.5"]
+    H["Use Mean as robust average"]
+    I{"Is mode dominant? (>50% values)"}
+    J["Use Mode as robust average"]
+    K["Return selected value, method, and stats"]
+
+    A --> B --> C --> D --> E
+    E -- Yes --> F --> K
+    E -- No --> G --> I
+    I -- Yes --> J --> K
+    I -- No --> H --> K
+```
+
 ## 📚 API Reference
 
 ### `robust_average(prices, return_all_stats=False)`
